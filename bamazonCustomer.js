@@ -67,9 +67,9 @@ var makePurchase = function () {
             type: "input",
             message: "Please enter the quantity of the item you're purchasing"
         }
-    ]).then(function (answers) {
-        var selectedProduct = answers.product_id;
-        var productQuantity = answers.product_quantity;
+    ]).then(function (answer) {
+        var selectedProduct = answer.product_id;
+        var productQuantity = answer.product_quantity;
         var priceTotal;
         var stockQuantity;
         var newQuantity;
@@ -86,6 +86,7 @@ var makePurchase = function () {
 
             if (newQuantity < 0) {
                 console.log("Item is temporarily out of stock");
+                additionalPurchase();
             } else {
                 connection.query("UPDATE products SET ? WHERE ?", [{
                     stock_quantity: newQuantity
@@ -96,10 +97,27 @@ var makePurchase = function () {
                 ], function (err, res) {
                     if (err) throw err;
                     console.log("Your total is: " + priceTotal);
+                    additionalPurchase();
                 });
-                connection.end();
             }
         })
-    })
-}
+    });
+};
+
+var additionalPurchase = function() {
+    inquirer.prompt([
+        {
+            name: "additional_purchase",
+            type: "input",
+            message: "Would you like to make an additional purchase?"
+        }
+    ]).then(function(answer){
+        if(answer.addional_purchase === "Yes" || "yes") {
+            makePurchase();
+        } else {
+            console.log("Thank you for shopping!!")
+            console.log("======================================================================================");
+        }
+    });
+};
 
