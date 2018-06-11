@@ -85,7 +85,7 @@ var makePurchase = function () {
             priceTotal = "$ " + productQuantity * productPrice;
 
             if (newQuantity < 0) {
-                console.log("Item is temporarily out of stock");
+                console.log("Insufficient quantity!");
                 additionalPurchase();
             } else {
                 connection.query("UPDATE products SET ? WHERE ?", [{
